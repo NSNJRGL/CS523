@@ -23,12 +23,11 @@ import java.util.concurrent.TimeUnit;
 public class tweetproducer {
 	Logger logger = LoggerFactory.getLogger(tweetproducer.class.getName());
 	String consumerKey = "JYH4JVCi5sSiJ25Yc1hX7VSxE";
-	String consumerSecret = "Exnwn0HyKCU8VSPPiALzEytXAgkoQ7AsIqiyXFYIbeHgTD901q";// specify the consumerSecret key from the twitter app
-	String token = "326551772-DAMMvcFoUxWVlG2V8ldknfvy66aDb98Og8ZSXBtR";// specify the token key from the twitter app
-	String secret = "xZ7y0MOYbnmxWoX6dVbwvyFTw028WSaxGtCrOs92YFcLw";// specify the secret key from the twitter app
+	String consumerSecret = "Exnwn0HyKCU8VSPPiALzEytXAgkoQ7AsIqiyXFYIbeHgTD901q";
+	String token = "326551772-DAMMvcFoUxWVlG2V8ldknfvy66aDb98Og8ZSXBtR";
+	String secret = "xZ7y0MOYbnmxWoX6dVbwvyFTw028WSaxGtCrOs92YFcLw";
 
-	public tweetproducer() {
-	}// constructor to invoke the producer function
+	public tweetproducer() {}
 
 	public static void main(String[] args) {
 		new tweetproducer().run();
