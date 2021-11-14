@@ -20,17 +20,13 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-public class tweetproducer {
-	Logger logger = LoggerFactory.getLogger(tweetproducer.class.getName());
-	String consumerKey = "JYH4JVCi5sSiJ25Yc1hX7VSxE";
-	String consumerSecret = "Exnwn0HyKCU8VSPPiALzEytXAgkoQ7AsIqiyXFYIbeHgTD901q";
-	String token = "326551772-DAMMvcFoUxWVlG2V8ldknfvy66aDb98Og8ZSXBtR";
-	String secret = "xZ7y0MOYbnmxWoX6dVbwvyFTw028WSaxGtCrOs92YFcLw";
-
-	public tweetproducer() {}
+public class TweetProducer {
+	Logger logger = LoggerFactory.getLogger(TweetProducer.class.getName());
+	
+	public TweetProducer() {}
 
 	public static void main(String[] args) {
-		new tweetproducer().run();
+		new TweetProducer().run();
 	}
 
 	public void run() {
@@ -55,8 +51,7 @@ public class tweetproducer {
 				producer.send(new ProducerRecord<>("twitter-kafka", null, msg),
 						new Callback() {
 							@Override
-							public void onCompletion(
-									RecordMetadata recordMetadata, Exception e) {
+							public void onCompletion(RecordMetadata recordMetadata, Exception e) {
 								if (e != null) {
 									logger.error("Something went wrong", e);
 								}
@@ -70,50 +65,45 @@ public class tweetproducer {
 	}
 
 	public Client createTweetClient(BlockingQueue<String> msgQueue) {
-
+		
+		
 		Hosts hosebirdHosts = new HttpHosts(Constants.STREAM_HOST);
 		StatusesFilterEndpoint hosebirdEndpoint = new StatusesFilterEndpoint();
-		List<String> terms = Lists.newArrayList("a","b","c", "d", "e", "f", "g", "h", "i", "k", "j", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z");// terms we want to search on twitter
+		List<String> terms = Lists.newArrayList("coronavirus");// terms we want to search on twitter
 		hosebirdEndpoint.trackTerms(terms);
-		Authentication hosebirdAuth = new OAuth1(consumerKey, consumerSecret,
-				token, secret);
+		Authentication hosebirdAuth = new OAuth1(TwitterConfig.CONSUMER_KEY, TwitterConfig.CONSUMER_SECRET, TwitterConfig.TOKEN, TwitterConfig.SECRET);
 		ClientBuilder builder = new ClientBuilder()
-				.name("Hosebird-Client-01")
-				// optional: mainly for the logs
-				.hosts(hosebirdHosts).authentication(hosebirdAuth)
+				.name("Hosebird-Client")
+				.hosts(hosebirdHosts)
+				.authentication(hosebirdAuth)
 				.endpoint(hosebirdEndpoint)
 				.processor(new StringDelimitedProcessor(msgQueue));
 
 		Client hosebirdClient = builder.build();
-		return hosebirdClient; // Attempts to establish a connection.
+		return hosebirdClient;
 	}
 	
 	public KafkaProducer<String, String> createKafkaProducer() {
 		// creating kafka producer
 		// creating producer properties
-		String bootstrapServers = "127.0.0.1:9092";
-		Properties properties = new Properties();
-		properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
-				bootstrapServers);
-		properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
-				StringSerializer.class.getName());
-		properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-				StringSerializer.class.getName());
-		
-		// create safe Producer
-	    properties.setProperty(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
-	    properties.setProperty(ProducerConfig.ACKS_CONFIG, "all");
-	    properties.setProperty(ProducerConfig.RETRIES_CONFIG, Integer.toString(Integer.MAX_VALUE));
-	    properties.setProperty(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "5");
+		Properties prop = new Properties();
+	    prop.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaConfig.BOOTSTRAPSERVERS);
+	    prop.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+	    prop.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+
+	    // create safe Producer
+	    prop.setProperty(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, "true");
+	    prop.setProperty(ProducerConfig.ACKS_CONFIG, KafkaConfig.ACKS_CONFIG);
+	    prop.setProperty(ProducerConfig.RETRIES_CONFIG, KafkaConfig.RETRIES_CONFIG);
+	    prop.setProperty(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, KafkaConfig.MAX_IN_FLIGHT_CONN);
 
 	    // Additional settings for high throughput producer
-	    properties.setProperty(ProducerConfig.COMPRESSION_TYPE_CONFIG, "snappy");
-	    properties.setProperty(ProducerConfig.LINGER_MS_CONFIG, "20");
-	    properties.setProperty(ProducerConfig.BATCH_SIZE_CONFIG, Integer.toString(32*1024));
-	    
-		KafkaProducer<String, String> first_producer = new KafkaProducer<String, String>(
-				properties);
-		return first_producer;
+	    prop.setProperty(ProducerConfig.COMPRESSION_TYPE_CONFIG, KafkaConfig.COMPRESSION_TYPE);
+	    prop.setProperty(ProducerConfig.LINGER_MS_CONFIG, KafkaConfig.LINGER_CONFIG);
+	    prop.setProperty(ProducerConfig.BATCH_SIZE_CONFIG, KafkaConfig.BATCH_SIZE);
+
+	    // Create producer
+	    return new KafkaProducer<String, String>(prop);
 
 	}
 }
