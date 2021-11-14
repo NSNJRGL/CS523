@@ -16,9 +16,9 @@ import org.apache.spark.sql.SparkSession;
  * Hello world!
  *
  */
-public class sparkSql{
+public class SparkSql {
 	
-    public static void main( String[] args ) throws ClassNotFoundException, SQLException{
+    public void runSS() {
     	/*
     	 String driverName = "org.apache.hive.jdbc.HiveDriver";
          Class.forName(driverName);
