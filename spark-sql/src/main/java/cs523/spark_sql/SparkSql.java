@@ -18,7 +18,7 @@ import org.apache.spark.sql.SparkSession;
  */
 public class SparkSql {
 	
-    public void runSS() {
+    public void runSparkSql() {
     	/*
     	 String driverName = "org.apache.hive.jdbc.HiveDriver";
          Class.forName(driverName);

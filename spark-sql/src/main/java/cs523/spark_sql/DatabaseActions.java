@@ -58,6 +58,10 @@ public class DatabaseActions implements Serializable {
 
 			if (!admin.tableExists(table.getTableName())) {
 				System.out.println("Here is creating");
+				System.out.println("Here is creating");
+				System.out.println("Here is creating");
+				System.out.println("Here is creating");
+				System.out.println("Here is creating");
 				admin.createTable(table);
 			}
 			System.out.println("Table is now created!");

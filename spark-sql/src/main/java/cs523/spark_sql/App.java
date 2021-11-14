@@ -12,7 +12,7 @@ public class App {
 		
 		// spark
 		SparkSql ss = new SparkSql();
-		ss.runSS();
+		ss.runSparkSql();
 	}
 
 }
