@@ -4,9 +4,7 @@
 
 Twitter Streaming with Apache Spark, Apache Kafka, Hive, Hbase, SparkQL, and Tableau.
 
-**Big Data Technology - CS523**
-
-## How to run a project
+## How to run project
 
 1. Getting Twitter API keys
 
